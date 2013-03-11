@@ -1,5 +1,5 @@
 var winston = require('winston');
-var command = require('../lib/command.js');
+var Command = require('../lib/command.js');
 module.exports = function() {
   return function(game) {
     game.on("player:join", function(player) {
