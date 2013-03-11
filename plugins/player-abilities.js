@@ -3,11 +3,13 @@
   This is used to keep track of player ability state between the client and the server.
   Handles 0xCA in protocol.
 */
+var winston = require('winston');
 module.exports = function() {
   return function(game) {
     game.on("player:join", function(player) {
       player.client.on("packet:ca", function(packet) {
-
+        winston.info('packet flags');
+        winston.info(packet.flags);
         var creativeMode = (packet.flags & 0x01);
         var flying = (packet.flags & 0x02) >> 1;
         var canFly = (packet.flags & 0x04) >> 2;
