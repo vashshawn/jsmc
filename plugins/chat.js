@@ -6,7 +6,7 @@ module.exports = function() {
       player.client.on("packet:03", function(packet) {
         var playerCommands = new Command(game, player);
         if (playerCommands.parseMessage(packet.message)) {
-            return true;
+            //return true; do nothing?
         } else {
             game.players.forEach(function(other) {
                 other.client.emit("data", {pid: 0x03, message: "<" + player.name + " [eid " + player.eid + "]> " + packet.message});
