@@ -1,0 +1,17 @@
+{
+  "server": {
+    "port": 25565
+  },
+  "game": {
+    "name": "whiskers75/Miney",
+    "mode": 1,
+    "max_players": 25,
+    "difficulty": 0,
+    "admins": [ 
+        "whiskers75"
+    ],
+    "banned": [
+    
+    ]
+  }
+}
