@@ -1,4 +1,4 @@
-jsmc
+jsmc (whiskers75/Miney edition)
 ====
 
 Haha, who would write a Minecraft server in JavaScript anyway?
@@ -12,7 +12,7 @@ Minecraft server. It's written in JavaScript and runs well under node.js.
 DEMO
 ----
 
-There's usually a copy of recent code running on `fknsrs.biz:25565` if you just
+There's usually a copy of recent (vanilla) code running on `fknsrs.biz:25565` if you just
 want to kick the tires without installing anything.
 
 Features
@@ -45,11 +45,12 @@ Usage
 ```
 $ ./server.example.js config.default.json
 ```
-
+(not that you'll be doing that)
 License
 -------
 
 3-clause BSD. A copy is included with the source.
+(whiskers75: Aw! I like the GPL.)
 
 Contact
 -------
