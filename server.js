@@ -6,7 +6,7 @@
 var nconf = require("nconf"),
     optimist = require("optimist");
 
-nconf.argv();
+nconf.argv();
 optimist.argv._.reverse().concat(["config.json"]).forEach(function(file) { nconf.file(file.toLowerCase().replace(/[^a-z0-9]+/g, "_"), file); });
 nconf.defaults({
   server: {

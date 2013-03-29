@@ -7,6 +7,11 @@ MapgenFloor.prototype.modify = function modify(chunk, cb) {
       chunk.set_block_type(x, z, 0, 7);
     }
   }
+  for (var x = 0; x < 16; ++x) {
+    for (var z = 0; z < 16; ++z) {
+      chunk.set_block_type(x, z, 1, 2);
+    }
+  }
 
   return cb(null, chunk);
 };
