@@ -16,12 +16,12 @@ module.exports = function() {
           if(~game.banned.indexOf(packet.username)) {
             client.emit("data", {
               pid: 0xff,
-              message: "Banned."
+              message: "You have been banned from whiskers75/Miney."
             });
             return;
           }
 
-          var player = new Player(game, {client: client, name: packet.username, x: 0, y: y, z: 0, stance: y + 1.62, yaw: 0, pitch: 0});
+          var player = new Player(game, {client: client, name: packet.username, x: game.spawn.x, y: game.spawn.y, z: game.spawn.z, stance: y + 1.62, yaw: 0, pitch: 0});
 
           if(~game.admins.indexOf(packet.username))
             player.admin = true;

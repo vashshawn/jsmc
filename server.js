@@ -17,6 +17,9 @@ nconf.defaults({
     mode: 1,
     max_players: 25,
     difficulty: 0,
+    spawnx: 0,
+    spawny: 0,
+    spawnz: 0,
   },
 });
 
