@@ -43,12 +43,21 @@ module.exports = function() {
               block_y = tmp_y;
 
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
+            if (!chunk.ptect) {
+              chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
 
-            chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-
-            game.clients.forEach(function(client) {
-              client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0});
-            });
+              game.clients.forEach(function(client) {
+                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0});
+              });
+            }
+            else {
+              if (packet.slot.block == 7 && player.isAdmin()) {
+                chunk.ptect == true;
+              }
+              if (packet.slot.block == 101 && player.isAdmin()) {
+                chunk.ptect == false;
+              }
+            }
           });
       });
     });
