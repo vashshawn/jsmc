@@ -9,7 +9,10 @@ module.exports = function() {
             //return true; do nothing?
         } else {
             game.players.forEach(function(other) {
-                other.client.emit("data", {pid: 0x03, message: "<" + player.name + " [eid " + player.eid + "]> " + packet.message});
+                if (player.isAdmin()) {
+                player.adstat = ' (Admin)'
+                }
+                other.client.emit("data", {pid: 0x03, message: "<" + player.name + player.adstat + "> " + packet.message});
             });
         }
       });

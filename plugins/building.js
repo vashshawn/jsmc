@@ -43,7 +43,7 @@ module.exports = function() {
               block_y = tmp_y;
 
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-            if (!chunk.ptect) {
+            if (!chunk.ptect && packet.slot.block) { // TODO: Find redstone ID and block it (not fully supported yet)
               chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
 
               game.clients.forEach(function(client) {
