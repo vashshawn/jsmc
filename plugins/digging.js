@@ -11,7 +11,7 @@ module.exports = function() {
               block_y = packet.y;
 
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-            if (!chunk.ptect) {
+            if (!chunk.protection.active || player.name == chunk.protection.name) {
               chunk.set_block_type(block_x, block_z, block_y, 0);
 
               console.log("Removed block " + [block_x , block_z, block_y].join(":"));

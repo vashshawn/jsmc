@@ -8,7 +8,7 @@ var MapgenLoad = module.exports = function MapgenLoad(location) {
 MapgenLoad.prototype.modify = function modify(chunk, cb) {
   var k = [chunk.x.toString(36), chunk.z.toString(36)].join(":"),
       file = path.join(this.location, Buffer(k).toString("base64"));
-  var file2 = this.location + Buffer(k).toString("base64") + '.json'
+  var file2 = path.join(location, Buffer(k).toString("base64") + '.json')
   fs.exists(file, function(exists) {
       if (!exists) {
           return cb(null, chunk);

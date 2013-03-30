@@ -16,7 +16,7 @@ module.exports = function(location) {
           }
 
           game.map.chunks[k].dirty = false;
-         fs.writeFile(location + Buffer(k).toString("base64") + '.json', JSON.stringify(game.map.chunks[k]), function(err) {
+         fs.writeFile(path.join(location, Buffer(k).toString("base64") + '.json'), JSON.stringify(game.map.chunks[k]), function(err) {
           if (err) {
             console.warn(err);
             return;
