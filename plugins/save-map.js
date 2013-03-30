@@ -16,6 +16,13 @@ module.exports = function(location) {
           }
 
           game.map.chunks[k].dirty = false;
+          game.map.chunks[k].data = null;
+         fs.writeFile(path.join(location, Buffer(k).toString("base64"), '.json'), JSON.stringify(game.map.chunks[k]), function(err) {
+          if (err) {
+            console.warn(err);
+            return;
+          } 
+          });
         });
       });
     }, 10000);
