@@ -52,10 +52,12 @@ module.exports = function() {
             }
             else {
               if (packet.slot.block == 7 && player.isAdmin()) {
-                chunk.ptect == true;
+                chunk.ptect = true;
+                chunk.set_block_type(chunk.x, chunk.z, 1, 133);
               }
               if (packet.slot.block == 84 && player.isAdmin()) {
-                chunk.ptect == false;
+                chunk.ptect = false;
+                chunk.set_block_type(chunk.x, chunk.z, 1, 152);
               }
             }
           });
