@@ -45,7 +45,7 @@ module.exports = function() {
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
             if (!chunk.ptect || player.isAdmin() && packet.slot.block !== 331) { // Blocks redstone dust (not fully working)
               chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-
+              chunk.set_block_type(chunk.x, chunk.z, 1, 152);
               game.clients.forEach(function(client) {
                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0});
               });
