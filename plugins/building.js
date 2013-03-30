@@ -43,7 +43,7 @@ module.exports = function() {
               block_y = tmp_y;
 
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-            if (!chunk.ptect || player.isAdmin() && packet.slot.block !== 331) { // Blocks redstone dust (not fully working)
+            if (!chunk.protection.active || player.name == chunk.protection.owner || player.isAdmin() && packet.slot.block !== 331) { // Blocks redstone dust (not fully working)
               chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
               chunk.set_block_type(chunk.x, chunk.z, 1, 152);
               game.clients.forEach(function(client) {
@@ -52,11 +52,13 @@ module.exports = function() {
             }
             else {
               if (packet.slot.block == 7 && player.isAdmin()) {
-                chunk.ptect = true;
+                chunk.protection.active = true;
+                chunk.protection.owner = player.name;
                 chunk.set_block_type(chunk.x, chunk.z, 1, 133);
               }
               if (packet.slot.block == 84 && player.isAdmin()) {
-                chunk.ptect = false;
+                chunk.protection.active = false;
+                chunk.protection.owner = player.name;
                 chunk.set_block_type(chunk.x, chunk.z, 1, 152);
               }
             }
