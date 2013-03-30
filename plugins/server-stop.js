@@ -7,7 +7,7 @@ module.exports = function() {
       game.clients.forEach(function(client) {
         client.emit("data", {
           pid: 0xff,
-          message: "Server is shutting down."
+          message: "whiskers75/Miney is now closing. This may be due to lag, or maintenance."
         });
       });
 
