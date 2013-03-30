@@ -43,7 +43,7 @@ module.exports = function() {
               block_y = tmp_y;
 
           game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-            if (!chunk.ptect && packet.slot.block) { // TODO: Find redstone ID and block it (not fully supported yet)
+            if (!chunk.ptect || player.isAdmin() && packet.slot.block !== 331) { // Blocks redstone dust (not fully working)
               chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
 
               game.clients.forEach(function(client) {
@@ -54,7 +54,7 @@ module.exports = function() {
               if (packet.slot.block == 7 && player.isAdmin()) {
                 chunk.ptect == true;
               }
-              if (packet.slot.block == 101 && player.isAdmin()) {
+              if (packet.slot.block == 84 && player.isAdmin()) {
                 chunk.ptect == false;
               }
             }
