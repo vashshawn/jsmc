@@ -13,24 +13,14 @@ MapgenLoad.prototype.modify = function modify(chunk, cb) {
       if (!exists) {
           return cb(null, chunk);
       }
-      fs.exists(file2, function(exists) {
-          if (!exists) {
-              return cb(null, chunk);
-          }
           fs.readFile(file, function(err, data) {
               if (err) {
                   return cb(err);
-              }
-              fs.readFile(file2, function(err, newChunk) {
-                  if (err) {
-                      return cb(err);
-                  }
-              chunk = JSON.parse(newChunk); 
+              } 
               data.copy(chunk.data);
 
               return cb(true, chunk);
               });
           });
-      });
   });
   };
