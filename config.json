@@ -1,17 +1,17 @@
 {
-  "server": {
-    "port": 25565
-  },
-  "game": {
-    "name": "§fwhiskers75/§2Miney §1v§0.1",
-    "mode": 1,
-    "max_players": 25,
-    "difficulty": 0,
-    "admins": [ 
-        "whiskers75"
-    ],
-    "banned": [
-    
-    ]
-  }
+    "server": {
+	"port": 25565
+    },
+    "game": {
+	"name": "§fwhiskers75/§2Miney",
+	"mode": 1,
+	"max_players": 25,
+	"difficulty": 0,
+	"admins": [ 
+            "whiskers75"
+	],
+	"banned": [
+	    
+	]
+    }
 }

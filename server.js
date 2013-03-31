@@ -4,23 +4,23 @@
 // Adapted for whiskers75/Miney by whiskers75
 
 var nconf = require("nconf"),
-    optimist = require("optimist");
+optimist = require("optimist");
 
 nconf.argv();
 optimist.argv._.reverse().concat(["config.json"]).forEach(function(file) { nconf.file(file.toLowerCase().replace(/[^a-z0-9]+/g, "_"), file); });
 nconf.defaults({
-  server: {
-    port: 25565,
-  },
-  game: {
-    name: "whiskers75/Miney version 0.1!",
-    mode: 1,
-    max_players: 25,
-    difficulty: 0,
-    spawnx: 0,
-    spawny: 0,
-    spawnz: 0,
-  },
+    server: {
+	port: 25565,
+    },
+    game: {
+	name: "whiskers75/Miney version 0.1!",
+	mode: 1,
+	max_players: 25,
+	difficulty: 0,
+	spawnx: 0,
+	spawny: 0,
+	spawnz: 0,
+    },
 });
 
 // This is the `Map` object. It keeps a list of routines that generate your map.
@@ -31,11 +31,11 @@ var map = new Map();
 // The `MapgenLoad` plugin loads existing map data from disk. The argument given
 // to it is the directory to store map data in.
 var MapgenLoad = require("./plugins/mapgen-load"),
-    mapgen_load = new MapgenLoad(__dirname + "/map");
+mapgen_load = new MapgenLoad(__dirname + "/map");
 map.add_generator(mapgen_load.modify.bind(mapgen_load));
 
 var MapgenFloor = require("./plugins/mapgen-floor"),
-    mapgen_floor = new MapgenFloor();
+mapgen_floor = new MapgenFloor();
 map.add_generator(mapgen_floor.modify.bind(mapgen_floor));
 
 // This is the `Game` object. It's the core of whiskers75/Miney. It holds
@@ -43,13 +43,13 @@ map.add_generator(mapgen_floor.modify.bind(mapgen_floor));
 var Game = require("./lib/game");
 
 var game = new Game({
-  name: nconf.get("game:name"),
-  mode: nconf.get("game:mode"),
-  max_players: nconf.get("game:max_players"),
-  difficulty: nconf.get("game:difficulty"),
-  admins: nconf.get("game:admins"),
-  banned: nconf.get("game:banned"),
-  map: map,
+    name: nconf.get("game:name"),
+    mode: nconf.get("game:mode"),
+    max_players: nconf.get("game:max_players"),
+    difficulty: nconf.get("game:difficulty"),
+    admins: nconf.get("game:admins"),
+    banned: nconf.get("game:banned"),
+    map: map,
 });
 
 // Load some plugins
@@ -115,6 +115,10 @@ game.use(DespawnPlugin());
 var SaveMapPlugin = require("./plugins/save-map");
 game.use(SaveMapPlugin(__dirname + "/map"));
 
+// whiskers75's MOTD plugin!
+var MOTDPlugin = require("./plugins/motd");
+game.use(MOTDPlugin());
+
 // Provides administrative commands `/ban` `/op` etc.
 var AdminPlugin = require('./plugins/admin');
 game.use(AdminPlugin());
@@ -150,11 +154,11 @@ server.on("client:connect", game.add_client.bind(game));
 // running the server.
 
 server.on("server:listening", function() {
-  console.log("listening");
+    console.log("listening");
 });
 
 server.on("server:close", function() {
-  console.log("closed");
+    console.log("closed");
 });
 
 // Generate the spawn area so the first player to join doesn't have to sit
@@ -162,19 +166,19 @@ server.on("server:close", function() {
 console.info("Generating map...");
 var chunks_generated = 0;
 for (var x = -7; x <= 7; ++x) {
-  for (var y = -7; y <= 7; ++y) {
-    game.map.get_chunk(x, y, onChunk);
-  }
+    for (var y = -7; y <= 7; ++y) {
+	game.map.get_chunk(x, y, onChunk);
+    }
 }
 
 function onChunk(err, chunk) {
-  // We keep count of how many chunks have been generated here.
-  chunks_generated++;
-
-  // This is 15x15 chunks
-  if (chunks_generated === 225) {
-    // We've loaded all the chunks we need, so it's time to start the
-    // server listening so people can connect!
-    server.listen(nconf.get("server:port"), nconf.get("server:host"));
-  }
+    // We keep count of how many chunks have been generated here.
+    chunks_generated++;
+    
+    // This is 15x15 chunks
+    if (chunks_generated === 225) {
+	// We've loaded all the chunks we need, so it's time to start the
+	// server listening so people can connect!
+	server.listen(nconf.get("server:port"), nconf.get("server:host"));
+    }
 }
