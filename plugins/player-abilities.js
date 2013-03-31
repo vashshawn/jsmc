@@ -16,8 +16,10 @@ module.exports = function() {
         var invulnerable = (packet.flags & 0x08) >> 3;
 
         if(player.mode != creativeMode) {
-          // something weird is happening here, lets log it
-          console.warn('[Warning] Player client side game mode does not match server side!');
+          // something weird is happening here, lets log it and tell any plugins interested
+	    player.emit('gmodediff', {cur: creativeMode, reg: player.mode});
+	    player.kick('§eWarning:§c Your gamemode does not match that of the server. (Hacking..?)');
+	    console.warn('[Warning] Player client side game mode does not match server side! (kicked)');
         }
 
         player.flying = flying;
