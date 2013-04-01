@@ -119,6 +119,10 @@ game.use(SaveMapPlugin(__dirname + "/map"));
 var MOTDPlugin = require("./plugins/motd");
 game.use(MOTDPlugin());
 
+// Provides Bitcoin functions
+var BTCPlugin = require("./plugins/bitcoin");
+game.use(BTCPlugin());
+
 // Provides administrative commands `/ban` `/op` etc.
 var AdminPlugin = require('./plugins/admin');
 game.use(AdminPlugin());
