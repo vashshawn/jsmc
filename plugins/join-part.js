@@ -11,5 +11,10 @@ module.exports = function() {
 		other.client.emit("data", {pid: 0x03, message: "§4[-] §5" + player.name + "§4 left"});
 	    });
 	});
+	game.on("server:error", function() {
+            game.players.forEach(function(other) {
+                other.client.emit("data", {pid: 0x03, message: "§4[x] Internal server error"});
+            });
+        }
     };
 };
