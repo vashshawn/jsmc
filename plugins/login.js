@@ -64,9 +64,7 @@ module.exports = function() {
                         	    console.warn(player.name + ': err:' + err); 
                                 }
 				else {
-				    var temp = player.eid;
-				    player = JSON.stringify(file);
-				    player.eid = temp;
+				    player.save = JSON.stringify(file);
 				    // Yay! Success!
 				    player.message('§2Loaded player from disk.');
 				    console.log('loaded player ' + player.name + "'s savefile");
