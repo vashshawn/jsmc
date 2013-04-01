@@ -17,24 +17,51 @@ module.exports = function() {
 		    if(~game.banned.indexOf(packet.username)) {
 			client.emit("data", {
 			    pid: 0xff,
-			    message: "Connection §4failed: You have been banned!."
+			    message: "Connection §4failed: You have been banned!"
 			});
 			return;
 		    }
 		    
 		    var player = new Player(game, {client: client, name: packet.username, x: game.spawn.x, y: game.spawn.y, z: game.spawn.z, stance: y + 1.62, yaw: 0, pitch: 0});
 		    
-		    if(~game.admins.indexOf(packet.username))
+		    if(~game.admins.indexOf(packet.username)) {
 			player.admin = true;
-
-		    fs.existsSync('../players/' + player.name + '.json', function(err, exists) {
-			if (exists) {
-                            fs.readFile('../players/' + player.name + '.json', function(err, file) {
-				if (err) {
-                                    client.emit("data", {
-                                        pid: 0xff,
-                                        message: "Connection §4failed: Error reading player savefile! (stage 2) Info: " + err
-                                    }); 
+		    }
+		    
+                    console.log("created player " + player.name + " and spawning at " + [player.x, player.y, player.z].join(","));
+                    
+                    console.log("logging player in");
+                    
+                    client.emit("data", {
+                        pid: 0x01,
+                        eid: player.eid,
+                        level_type: game.world.type,
+                        game_mode: game.mode,
+                        dimension: game.world.dimension,
+                        difficulty: game.difficulty,
+                        max_players: game.max_players,
+		    });
+		    
+                    game.add_player(player);
+		    
+                    fs.exists('./players/' + player.name + '.json', function(err, exists) {
+			if (!exists && !err) {
+			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
+                            fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
+                                if (err) {
+                                    console.warn('failed to save player ' + player.name + ' ' + err);
+                                    player.message('§4[System] Failed to save your player file!');
+                                }
+                                else {
+                                    console.log('saved player ' + player.name);
+                                    player.message('§2[System] Saved player file.');
+                                }
+                            });
+			}
+			else {
+                            fs.readFile('./players/' + player.name + '.json', function(err, file) {
+                                if (err) {
+                        	    console.warn(player.name + ': err:' + err); 
                                 }
 				else {
 				    var temp = player.eid;
@@ -42,39 +69,39 @@ module.exports = function() {
 				    player.eid = temp;
 				    // Yay! Success!
 				    player.message('§2Loaded player from disk.');
+				    console.log('loaded player ' + player.name + "'s savefile");
+				    player.saveInterval = setInterval(function save() {
+                                        fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
+                                            if (err) {
+                                                console.warn('failed to save player ' + player.name + ' ' + err);
+						player.message('§4[System] Failed to save your player file!');
+                                            }
+                                            else {
+                                                console.log('saved player ' + player.name);
+						player.message('§2[System] Saved player file.');
+                                            }
+                                        }); 
+                                    }, 60000);
 				}
                             });
-                        }
-                        if (err) {
-                            client.emit("data", {
-                                pid: 0xff,
-                                message: "Connection §4failed: Error reading player savefile! (stage 1) Info: " + err
-                            });
-                        }
+			}
 		    });
-				  
-		    console.log("created player " + player.name + " and spawning at " + [player.x, player.y, player.z].join(","));
-				  
-		    console.log("logging player in");
-				  
-		    client.emit("data", {
-			pid: 0x01,
-			eid: player.eid,
-			level_type: game.world.type,
-			game_mode: game.mode,
-			dimension: game.world.dimension,
-			difficulty: game.difficulty,
-			max_players: game.max_players,
-		    });
-
-		    game.add_player(player);
-
+		    
 		    client.on("game:disconnect", function() {
+                        fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
+			    if (err) {
+				console.warn('failed to save player ' + player.name);
+			    }
+			    else {
+				console.log('saved player ' + player.name);
+			    }
+			});
 			game.remove_player(player);
-			fs.writeFileSync('../players/' + player.name + '.json', JSON.stringify(player));
 		    });
 		});
 	    });
 	});
     };
 };
+
+
