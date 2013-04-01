@@ -49,12 +49,16 @@ module.exports = function() {
                                 chunk.protection.active = true;
                                 chunk.protection.owner = player.name;
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 133);
+				player.message('§2Created new protected chunk at ' + chunk.x + ',' + chunk.z);
+				player.save.protection.chunks.push(new Object({x: chunk.x, z: chunk.z}));
                             }
-                            if (packet.slot.block == 84 && player.isAdmin()) {
+			    if (packet.slot.block == 84 && player.isAdmin()) {
                                 chunk.protection.active = false;
                                 chunk.protection.owner = player.name;
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 152);
-                            }
+                                player.message('§4Deleted protected chunk at ' + chunk.x + ',' + chunk.z);
+                                player.save.protection.chunks.splice(player.save.protection.chunks.indexOf(new Object({x: chunk.x, z: chunk.z}), 1));
+			    }
 			    if (chunk.protection.enabled) {
                                 chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 133);

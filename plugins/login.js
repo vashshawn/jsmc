@@ -48,6 +48,7 @@ module.exports = function() {
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
+			    player.save = new Object({protection: new Object({chunks: []})});
                             fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                 if (err) {
                                     console.warn('failed to save player ' + player.name + ' ' + err);
@@ -65,39 +66,43 @@ module.exports = function() {
                         	    console.warn(player.name + ': err:' + err); 
                                 }
 				else {
-				    player.save = JSON.stringify(file);
+				    player.save = JSON.parse(file);
 				    // Yay! Success!
 				    player.message('§2Loaded player from disk.');
+                                    // Check for saved (protected) chunks
+                                    if (player.save.protection.chunks) {
+                                        player.save.protection.chunks.forEach(function(protChunk) {
+                                            game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
+                                                chunk.protection.active == true;
+                                                chunk.protection.owner == player.name;
+                                                chunk.set_block_type(chunk.x, chunk.z, 1, 133);
+                                                player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z);
+                                            });
+                                        });
+				    }
 				    console.log('loaded player ' + player.name + "'s savefile");
+				    console.log('file of ' + player.name + ':' + file);
 				    player.saveInterval = setInterval(function save() {
                                         fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                             if (err) {
                                                 console.warn('failed to save player ' + player.name + ' ' + err);
-						player.message('§4[System] Failed to save your player file!');
+						this.message('§4[System] Failed to save your player file!');
                                             }
                                             else {
                                                 console.log('saved player ' + player.name);
-						player.message('§2[System] Saved player file.');
+						this.message('§2[System] Saved player file.');
                                             }
                                         }); 
                                     }, 60000);
 				}
-                            });
-			}
-			// Check for saved (protected) chunks
-			if (player.saves.protection.chunks) {
-			    player.saves.protection.chunks.forEach(function(protChunk) {
-				Map.get_chunk(protChunk.x, protChunk.z, function(chunk) {
-				    chunk.protection.active == true;
-				    chunk.protection.owner == player.name;
-				    chunk.set_block_type(chunk.x, chunk.z, 1, 133);
-				    player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z);
-				});
 			    });
 			}
 		    });
-		    
-		    client.on("game:disconnect", function() {
+		    });
+			    
+			      
+		client.on("game:disconnect", function() { 
+                    game.remove_player(player);
                         fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
 			    if (err) {
 				console.warn('failed to save player ' + player.name);
@@ -106,12 +111,10 @@ module.exports = function() {
 				console.log('saved player ' + player.name);
 			    }
 			});
-			game.remove_player(player);
 		    });
 		});
 	    });
-	});
-    };
-};
+	}
+    }
 
 
