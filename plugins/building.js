@@ -44,7 +44,7 @@ module.exports = function() {
 		
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
 		    if (!chunk.protection.enabled || chunk.protection.owner == player.name || player.isAdmin()) {
-			if (packet.slot.block != 55 || packet.slot.block != 54 || packet.slot.block != 130 || packet.slot.block != 146) {
+			if (packet.slot.block != 55 && packet.slot.block != 54 && packet.slot.block != 130 && packet.slot.block != 146) {
                             if (packet.slot.block == 7 && player.isAdmin()) {
                                 chunk.protection.active = true;
                                 chunk.protection.owner = player.name;
