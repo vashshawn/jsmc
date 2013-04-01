@@ -1,5 +1,6 @@
 var Player = require("../lib/player.js");
 var fs = require('fs');
+var Map = require("../lib/map");
 
 module.exports = function() {
     return function(game) {
@@ -82,6 +83,17 @@ module.exports = function() {
                                     }, 60000);
 				}
                             });
+			}
+			// Check for saved (protected) chunks
+			if (player.saves.protection.chunks) {
+			    player.saves.protection.chunks.forEach(function(protChunk) {
+				Map.get_chunk(protChunk.x, protChunk.z, function(chunk) {
+				    chunk.protection.active == true;
+				    chunk.protection.owner == player.name;
+				    chunk.set_block_type(chunk.x, chunk.z, 1, 133);
+				    player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z);
+				});
+			    });
 			}
 		    });
 		    
