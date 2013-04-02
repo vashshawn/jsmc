@@ -51,14 +51,20 @@ module.exports = function() {
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 133);
 				player.message('§2Created new protected chunk at ' + chunk.x + ',' + chunk.z);
 				player.save.protection.chunks.push(new Object({x: chunk.x, z: chunk.z}));
+                                game.clients.forEach(function(client) {
+                                    client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z, type: 133, metadata: 0});
+                                });
                             }
-			    if (packet.slot.block == 84 && chunk.protection.active && chunk.protection.owner == player.name) {
+        		    if (packet.slot.block == 84 && chunk.protection.active && chunk.protection.owner == player.name) {
                                 chunk.protection.active = false;
                                 chunk.protection.owner = player.name;
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 152);
                                 player.message('§4Deleted protected chunk at ' + chunk.x + ',' + chunk.z);
                                 player.save.protection.chunks.splice(player.save.protection.chunks.indexOf(new Object({x: chunk.x, z: chunk.z}), 1));
-			    }
+                                game.clients.forEach(function(client) {
+                                    client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z, type: 152, metadata: 0});
+                                });
+                            }
 			    if (chunk.protection.enabled && packet.slot.block != 84 && packet.slot.block != 7) {
                                 chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 133);
