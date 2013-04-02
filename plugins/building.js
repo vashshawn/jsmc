@@ -68,9 +68,10 @@ module.exports = function() {
                             }
 			    if (packet.slot.block == 331) {
                                 chunk.set_block_type(block_x, block_z, block_y, 55);
-			    }
-			    else {
-				if (packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
+				chunk.updateRedstone(block_x, block_z, block_y, player);
+                            }
+                            else {
+                                if (packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
                                     chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
                                     chunk.set_block_type(chunk.x, chunk.z, 1, 152);
                                     game.clients.forEach(function(client) {
