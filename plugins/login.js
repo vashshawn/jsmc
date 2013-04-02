@@ -72,11 +72,10 @@ module.exports = function() {
                                     // Check for saved (protected) chunks
                                     if (player.save.protection.chunks) {
                                         player.save.protection.chunks.forEach(function(protChunk) {
-                                            game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
+                                            game.map.get_chunk(protChunk.x, protChunk.z, function(err, chunk) {
                                                 chunk.protection.active == true;
                                                 chunk.protection.owner == player.name;
-                                                chunk.set_block_type(chunk.x, chunk.z, 1, 133);
-                                                player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z);
+                                                player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
                                             });
                                         });
 				    }

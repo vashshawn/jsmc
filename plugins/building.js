@@ -48,36 +48,68 @@ module.exports = function() {
                             if (packet.slot.block == 7 && !chunk.protection.active) {
                                 chunk.protection.active = true;
                                 chunk.protection.owner = player.name;
-                                chunk.set_block_type(chunk.x, chunk.z, 1, 133);
 				player.message('§2Created new protected chunk at ' + chunk.x + ',' + chunk.z);
 				player.save.protection.chunks.push(new Object({x: chunk.x, z: chunk.z}));
-                                game.clients.forEach(function(client) {
-                                    client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z, type: 133, metadata: 0});
-                                });
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + i, chunk.z, 1, 133);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + i, y: 1, z: chunk.z, type: 133, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x, chunk.z + i, 1, 133);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z + i, type: 133, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + i, chunk.z + 16, 1, 133);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + i, y: 1, z: chunk.z + 16, type: 133, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + 16, chunk.z + i, 1, 133);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + 16, y: 1, z: chunk.z + i, type: 133, metadata: 0});
+                                    });
+                                }
                             }
-        		    if (packet.slot.block == 84 && chunk.protection.active && chunk.protection.owner == player.name) {
+                            if (packet.slot.block == 84 && chunk.protection.active && chunk.protection.owner == player.name) {
                                 chunk.protection.active = false;
                                 chunk.protection.owner = player.name;
-                                chunk.set_block_type(chunk.x, chunk.z, 1, 152);
                                 player.message('§4Deleted protected chunk at ' + chunk.x + ',' + chunk.z);
                                 player.save.protection.chunks.splice(player.save.protection.chunks.indexOf(new Object({x: chunk.x, z: chunk.z}), 1));
-                                game.clients.forEach(function(client) {
-                                    client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z, type: 152, metadata: 0});
-                                });
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + i, chunk.z, 1, 152);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + i, y: 1, z: chunk.z, type: 152, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x, chunk.z + i, 1, 152);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x, y: 1, z: chunk.z + i, type: 152, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + i, chunk.z + 16, 1, 152);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + i, y: 1, z: chunk.z + 16, type: 152, metadata: 0});
+                                    });
+                                }
+                                for (var i = 0; 16 > i; i++) {
+                                    chunk.set_block_type(chunk.x + 16, chunk.z + i, 1, 152);
+                                    game.clients.forEach(function(client) {
+                                        client.emit("data", {pid: 0x35, x: chunk.x + 16, y: 1, z: chunk.z + i, type: 152, metadata: 0});
+                                    });
+                                }
                             }
 			    if (chunk.protection.enabled && packet.slot.block != 84 && packet.slot.block != 7) {
                                 chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-                                chunk.set_block_type(chunk.x, chunk.z, 1, 133);
-				game.clients.forEach(function(client) {
-                                    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0});
-                                });
+				
                             }
-			    if (packet.slot.block == 331) {
-                                chunk.set_block_type(block_x, block_z, block_y, 55);
-				chunk.set_block_meta(block_x, block_z, block_y, 0xF);
-                                game.clients.forEach(function(client) {
-                                    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0xF});
-                                });				
+			    if (packet.slot.block == 331) {			
 				player.message('§4Redstone support is not implemented yet and likely never will be, unless someone makes a pull request. :(');
 				player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
                             }
