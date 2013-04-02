@@ -68,9 +68,15 @@ module.exports = function() {
                             }
 			    if (packet.slot.block == 331) {
                                 chunk.set_block_type(block_x, block_z, block_y, 55);
-			    }
-			    else {
-				if (packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
+				chunk.set_block_meta(block_x, block_z, block_y, 0xF);
+                                game.clients.forEach(function(client) {
+                                    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0xF});
+                                });				
+				player.message('§4Redstone support is not implemented yet and likely never will be, unless someone makes a pull request. :(');
+				player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
+                            }
+                            else {
+                                if (packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
                                     chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
                                     chunk.set_block_type(chunk.x, chunk.z, 1, 152);
                                     game.clients.forEach(function(client) {
