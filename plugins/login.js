@@ -48,7 +48,15 @@ module.exports = function() {
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
-			    player.save = new Object({protection: new Object({chunks: []})});
+			    var chunkAlloc = JSON.parse(fs.readFileSync('./chunkAlloc.json'));
+			    player.save = new Object({protection: new Object({chunks: [{x: chunkAlloc.x, z: chunkAlloc.z, primary: true}]})});
+			    chunkAlloc.x = chunkAlloc.x + 1;
+			    if (chunkAlloc.x > chunkAlloc.z) {
+				chunkAlloc.z = chunkAlloc.z + 1;
+			    }
+			    fs.writeFileSync('./chunkAlloc.json', JSON.stringify(chunkAlloc));
+			    player.message('§2We\'ve allocated you a chunk (16x16 area) to build in. It can be found at ' + chunkAlloc.x + ', ' + chunkAlloc.z);
+			    player.message('Run /home to go to it.');
                             fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                 if (err) {
                                     console.warn('failed to save player ' + player.name + ' ' + err);
@@ -60,7 +68,7 @@ module.exports = function() {
                                 }
                             });
 			}
-			else {
+			
                             fs.readFile('./players/' + player.name + '.json', function(err, file) {
                                 if (err) {
                         	    console.warn(player.name + ': err:' + err); 
@@ -69,13 +77,13 @@ module.exports = function() {
 				    player.save = JSON.parse(file);
 				    // Yay! Success!
 				    player.message('§2Loaded player from disk.');
-                                    // Check for saved (protected) chunks
+                                    // Check for saved (permitted) chunks
                                     if (player.save.protection.chunks) {
                                         player.save.protection.chunks.forEach(function(protChunk) {
                                             game.map.get_chunk(protChunk.x, protChunk.z, function(err, chunk) {
                                                 chunk.protection.active == true;
                                                 chunk.protection.owner == player.name;
-                                                player.message('§2Loaded protected chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
+                                                player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
                                             });
                                         });
 				    }
@@ -101,7 +109,7 @@ module.exports = function() {
                                     }, 60000);
 				}
 			    });
-			}
+			
 		    });
 		});
 		
