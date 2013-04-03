@@ -82,8 +82,8 @@ module.exports = function() {
                                     player.save.protection.chunks.forEach(function(protChunk) {
 					game.map.get_abs_chunk(protChunk.x, protChunk.z, function() { // We need to init the chunk before we try setting stuff crazily
 					    game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
-						chunk.protection.active == true;
-						chunk.protection.owner == player.name;
+						chunk.protection.active = true;
+						chunk.protection.owner = player.name;
 						player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
 					    });
 					});
