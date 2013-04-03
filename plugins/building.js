@@ -77,21 +77,22 @@ module.exports = function() {
                         }
                     }
                     else {
-			if (player.isAdmin()) {
-			    if (packet.slot.block == 7) {
-				player.message('§2You now own chunk ' + chunk.x + ', ' + chunk.z);
-				player.save.protection.chunks.push({x: chunk.x, z: chunk.z});
-				chunk.protection.active = true;
-				chunk.protection.owner = player.name;
-                                game.clients.forEach(function(client) {
+			if (packet.slot.block == 7) {
+			    player.message('§2You now own chunk ' + chunk.x + ', ' + chunk.z);
+			    player.save.protection.chunks.push({x: chunk.x, z: chunk.z});
+			    chunk.protection.active = true;
+			    chunk.protection.owner = player.name;
+			    game.clients.forEach(function(client) {
                                     client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
-                                });
-                            }
-                        }
-                        else {
-                            player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
+                            });
 			}
-		    }
+			else {
+                            player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
+                            game.clients.forEach(function(client) {
+                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
+                            });
+                        } 
+                    }
 		});
 	    });
 	});

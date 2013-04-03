@@ -48,23 +48,16 @@ module.exports = function() {
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
-			    var chunkAlloc = JSON.parse(fs.readFileSync('./chunkAlloc.json'));
-			    player.save = new Object({protection: new Object({chunks: [{x: chunkAlloc.x, z: chunkAlloc.z, primary: true}]})});
-			    chunkAlloc.x = chunkAlloc.x + 1;
-			    if (chunkAlloc.x > chunkAlloc.z) {
-				chunkAlloc.z = chunkAlloc.z + 1;
-			    }
-			    fs.writeFileSync('./chunkAlloc.json', JSON.stringify(chunkAlloc));
-			    player.message('§2We\'ve allocated you a chunk (16x16 area) to build in. It can be found at ' + chunkAlloc.x + ', ' + chunkAlloc.z);
-			    player.message('Run /home to go to it.');
+			    player.save = new Object({protection: new Object({chunks: []})});
                             fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                 if (err) {
                                     console.warn('failed to save player ' + player.name + ' ' + err);
-                                    player.message('§4[System] Failed to save your player file!');
+                                    player.message('§4Failed to save your player file!');
                                 }
                                 else {
                                     console.log('saved player ' + player.name);
-                                    player.message('§2[System] Saved player file.');
+                                    player.message('§2Saved player file!');
+				    player.message('§2You can start building in a chunk by placing a piece of bedrock inside it.');
                                 }
                             });
 			}
@@ -83,9 +76,9 @@ module.exports = function() {
 					if (protChunk.x != null) {
 					    game.map.get_abs_chunk(protChunk.x, protChunk.z, function() { // We need to init the chunk before we try setting stuff crazily
 						game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
-						chunk.protection.active = true;
-						chunk.protection.owner = player.name;
-						player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
+						    chunk.protection.active = true;
+						    chunk.protection.owner = player.name;
+						    player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
 						});
 					    });
 					}

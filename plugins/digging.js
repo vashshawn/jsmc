@@ -22,8 +22,12 @@ module.exports = function() {
 			}
 			else {
 			    player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
+			    var tmp_type = chunk.get_block_type(block_x, block_y, block_z);
+                            game.clients.forEach(function(client) {
+                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: tmp_type, metadata: 0})
+                            });
 			}
-		    });
+                    });
 		}
 	    });
 	});
