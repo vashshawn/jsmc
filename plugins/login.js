@@ -80,13 +80,15 @@ module.exports = function() {
                                 // Check for saved (permitted) chunks
                                 if (player.save.protection.chunks) {
                                     player.save.protection.chunks.forEach(function(protChunk) {
-					game.map.get_abs_chunk(protChunk.x, protChunk.z, function() { // We need to init the chunk before we try setting stuff crazily
-					    game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
+					if (protChunk.x != null) {
+					    game.map.get_abs_chunk(protChunk.x, protChunk.z, function() { // We need to init the chunk before we try setting stuff crazily
+						game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
 						chunk.protection.active = true;
 						chunk.protection.owner = player.name;
 						player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
+						});
 					    });
-					});
+					}
                                     });
 				}
 				console.log('loaded player ' + player.name + "'s savefile");

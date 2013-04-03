@@ -1,7 +1,8 @@
 Array.prototype.removeChunk = function(x, z) {
     this.forEach(function (chunk, index) {
-	if (chunk.x == x &&  chunk.z == z) {
-	    this.splice(index, 1);
+	if (chunk.x == x && chunk.z == z) {
+	    chunk.x = null;
+	    chunk.z = null;
 	    return true;
 	}
     });
@@ -58,6 +59,13 @@ module.exports = function() {
 			    player.message('§4Redstone support is on its way, but the last attempt failed.');
 			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
                         }
+			if (packet.slot.block == 46) {
+			    player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
+			    player.save.protection.chunks.removeChunk(chunk.x, chunk.z);
+                            game.clients.forEach(function(client) {
+                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
+                            });
+                        }
                         else {
                             if (packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
                                 chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
@@ -70,18 +78,18 @@ module.exports = function() {
                     }
                     else {
 			if (player.isAdmin()) {
-			    player.message('§2Admin override detected.');
 			    if (packet.slot.block == 7) {
-				player.message('§2Bedrock detected. Adding chunk to permitted list.');
+				player.message('§2You now own chunk ' + chunk.x + ', ' + chunk.z);
 				player.save.protection.chunks.push({x: chunk.x, z: chunk.z});
-			    }
-			    if (packet.slot.block == 84) {
-				player.message('§4Jukebox detected. Removing chunk from permitted list.');
-				player.save.protection.chunks.removeChunk(chunk.x, chunk.z);
-			    }
-			}
-			else {
-			    player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
+				chunk.protection.active = true;
+				chunk.protection.owner = player.name;
+                                game.clients.forEach(function(client) {
+                                    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
+                                });
+                            }
+                        }
+                        else {
+                            player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
 			}
 		    }
 		});
