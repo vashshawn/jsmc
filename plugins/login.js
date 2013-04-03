@@ -69,46 +69,48 @@ module.exports = function() {
                             });
 			}
 			
-                            fs.readFile('./players/' + player.name + '.json', function(err, file) {
-                                if (err) {
-                        	    console.warn(player.name + ': err:' + err); 
-                                }
-				else {
-				    player.save = JSON.parse(file);
-				    // Yay! Success!
-				    player.message('§2Loaded player from disk.');
-                                    // Check for saved (permitted) chunks
-                                    if (player.save.protection.chunks) {
-                                        player.save.protection.chunks.forEach(function(protChunk) {
-                                            game.map.get_chunk(protChunk.x, protChunk.z, function(err, chunk) {
-                                                chunk.protection.active == true;
-                                                chunk.protection.owner == player.name;
-                                                player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
-                                            });
-                                        });
-				    }
-				    console.log('loaded player ' + player.name + "'s savefile");
-				    console.log('file of ' + player.name + ':' + file);
-				    player.saveInterval = setInterval(function save() {
-                                        fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
-                                            if (err) {
-                                                console.warn('failed to save player ' + player.name + ' ' + err);
-						try {
-						    this.message('§4[System] Failed to save your player file!');
-						}
-						catch (e) {}
-					    }
-                                            else {
-                                                console.log('saved player ' + player.name);
-						try {
-						    this.message('§2[System] Saved player file.');
-						}
-						catch (e) {}
-					    }
-                                        });
-                                    }, 60000);
+                        fs.readFile('./players/' + player.name + '.json', function(err, file) {
+                            if (err) {
+                        	console.warn(player.name + ': err:' + err); 
+                            }
+			    else {
+				player.save = JSON.parse(file);
+				// Yay! Success!
+				player.message('§2Loaded player from disk.');
+                                // Check for saved (permitted) chunks
+                                if (player.save.protection.chunks) {
+                                    player.save.protection.chunks.forEach(function(protChunk) {
+					game.map.get_abs_chunk(protChunk.x, protChunk.z, function() { // We need to init the chunk before we try setting stuff crazily
+					    game.map.get_abs_chunk(protChunk.x, protChunk.z, function(err, chunk) {
+						chunk.protection.active == true;
+						chunk.protection.owner == player.name;
+						player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
+					    });
+					});
+                                    });
 				}
-			    });
+				console.log('loaded player ' + player.name + "'s savefile");
+				console.log('file of ' + player.name + ':' + file);
+				player.saveInterval = setInterval(function save() {
+                                    fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
+                                        if (err) {
+                                            console.warn('failed to save player ' + player.name + ' ' + err);
+					    try {
+						this.message('§4[System] Failed to save your player file!');
+					    }
+					    catch (e) {}
+					}
+                                        else {
+                                            console.log('saved player ' + player.name);
+					    try {
+						this.message('§2[System] Saved player file.');
+					    }
+					    catch (e) {}
+					}
+                                    });
+                                }, 60000);
+			    }
+			});
 			
 		    });
 		});
