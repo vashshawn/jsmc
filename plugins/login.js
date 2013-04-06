@@ -83,55 +83,54 @@ module.exports = function() {
 					    })
 					}
 				    });
-				});
-				}
-				console.log('loaded player ' + player.name + "'s savefile");
-				console.log('file of ' + player.name + ':' + file);
-				player.saveInterval = setInterval(function save() {
-                                    fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
-                                        if (err) {
-                                            console.warn('failed to save player ' + player.name + ' ' + err);
-					    try {
-						this.message('§4[System] Failed to save your player file!');
+			}
+				    console.log('loaded player ' + player.name + "'s savefile");
+				    console.log('file of ' + player.name + ':' + file);
+				    player.saveInterval = setInterval(function save() {
+					fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
+                                            if (err) {
+						console.warn('failed to save player ' + player.name + ' ' + err);
+						try {
+						    this.message('§4[System] Failed to save your player file!');
+						}
+						catch (e) {}
 					    }
-					    catch (e) {}
-					}
-                                        else {
-                                            console.log('saved player ' + player.name);
-					    try {
-						this.message('§2[System] Saved player file.');
+                                            else {
+						console.log('saved player ' + player.name);
+						try {
+						    this.message('§2[System] Saved player file.');
+						}
+						catch (e) {}
 					    }
-					    catch (e) {}
-					}
-                                    });
-                                }, 60000);
-			    }
-			});
-			
+					});
+                                    }, 60000);
+				   }
 		    });
-		});
-		
-		
-		client.on("game:disconnect", function(player) {
-		    try {
-			game.remove_player(client.player);
-		    }
-		    catch (e) {
-			console.warn('failed to remove player');
-		    }
 		    
-                    fs.writeFile('./players/' + client.player.name + '.json', JSON.stringify(client.player.save), function(err, res) {
-			if (err) {
-			    console.warn('failed to save player ' + client.player.name);
-			}
-			else {
-			    console.log('saved player ' + client.player.name);
-			}
-		    });
+		});
+	    });
+	    
+	    
+	    client.on("game:disconnect", function(player) {
+		try {
+		    game.remove_player(client.player);
+		}
+		catch (e) {
+		    console.warn('failed to remove player');
+		}
+		
+                fs.writeFile('./players/' + client.player.name + '.json', JSON.stringify(client.player.save), function(err, res) {
+		    if (err) {
+			console.warn('failed to save player ' + client.player.name);
+		    }
+		    else {
+			console.log('saved player ' + client.player.name);
+		    }
 		});
 	    });
 	});
-    }
+    });
+}
 }
 
 
