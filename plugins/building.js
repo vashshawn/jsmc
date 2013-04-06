@@ -78,8 +78,11 @@ module.exports = function() {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 9, metadata: 0})
                             });
                         }
+			if (packet.slot.block == 383) {
+			    player.message('§4Item is not a block. Therefore, not placing...');
+			}
                         else {
-                            if (packet.slot.block != 326 && packet.slot.block != 327 && packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
+                            if (packet.slot.block != 383 || packet.slot.block != 326 && packet.slot.block != 327 && packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
                                 chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
                                 chunk.set_block_type(chunk.x, chunk.z, 1, 152);
                                 game.clients.forEach(function(client) {
@@ -95,7 +98,7 @@ module.exports = function() {
 			    chunk.protection.active = true;
 			    chunk.protection.owner = player.name;
 			    game.clients.forEach(function(client) {
-                                    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
+                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
                             });
 			}
 			else {
