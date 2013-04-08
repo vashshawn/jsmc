@@ -9,6 +9,7 @@ Array.prototype.removeChunk = function(x, z) {
 }
 
 var Unsupported = require('../lib/unsupported.js');
+var Redstone = require('../lib/redstone.js');
 
 // Array.removeChunk(chunk.x, .z);
 // Remove a chunk from an array of chunks, if it exists.
@@ -59,8 +60,8 @@ module.exports = function() {
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
 		    if (chunk.protection.active && chunk.protection.owner == player.name) {
 			if (packet.slot.block == 331) {			
-			    player.message('§4Redstone support is on its way, but the last attempt failed.');
-			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
+			    player.message('§4Updating redstone...');
+			    Redstone.update(tmp_x, tmp_y, tmp_z, chunk, game);
                         }
 			if (packet.slot.block == 46) {
 			    player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
