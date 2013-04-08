@@ -59,12 +59,23 @@ module.exports = function() {
 		
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
 		    if (chunk.protection.active && chunk.protection.owner == player.name) {
-			if (packet.slot.block == 331) {			
-			    player.message('§4Updating redstone...');
-			    Redstone.update(tmp_x, tmp_y, tmp_z, chunk, game);
+			if (packet.slot.block == 331) {
+                            chunk.set_block_type(block_x, block_z, block_y, 55);
+			    chunk.set_block_meta(block_x, block_z, block_y, 0);
+                            game.clients.forEach(function(client) {
+                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 55, metadata: 0})
+                            });
+                            Redstone.update(block_x, block_y, block_z, chunk, game);
                         }
-			if (packet.slot.block == 46) {
-			    player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
+			if (packet.slot.block == 76) {
+                            Redstone.updateOn(block_x, block_z, block_y, chunk, game);
+			    chunk.set_block_type(block_x, block_z, block_y, 76);
+			    game.clients.forEach(function(client) {
+				client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 76, metadata: 0})
+			    });
+                        }
+                        if (packet.slot.block == 46) {
+                            player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
 			    player.save.protection.chunks.removeChunk(chunk.x, chunk.z);
                             game.clients.forEach(function(client) {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})

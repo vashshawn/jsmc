@@ -1,3 +1,5 @@
+var Redstone = require('../lib/redstone.js');
+
 module.exports = function() {
     return function(game) {
 	game.on("player:join", function(player) {
@@ -19,6 +21,7 @@ module.exports = function() {
 			    game.clients.forEach(function(client) {
 				client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 0, metadata: 0});
 			    });
+			    Redstone.update(block_x, block_y, block_z, chunk, game);
 			}
 			else {
 			    player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
