@@ -1,20 +1,17 @@
 module.exports = function() {
-  return function(game) {
-    game.on("client:connect", function(client) {
-      console.log("waiting for server ping packet on client");
+    return function(game) {
+	game.on("client:connect", function(client) {
 
-      client.once("packet", function(packet) {
-        if (packet.pid !== 0xfe) { return; }
+	    client.once("packet", function(packet) {
+		if (packet.pid !== 0xfe) { return; }
+		
+		client.emit("data", {
+		    pid: 0xff,
+		    message: ["§1", "61", "JSMC-1.5.2", game.name, game.players.length, game.max_players].join("\x00")
+		});
 
-        console.log("got server ping packet");
-
-        client.emit("data", {
-          pid: 0xff,
-          message: ["§1", "60", "1.5.1", game.name, game.players.length, game.max_players].join("\x00"),
-        });
-
-        client.end();
-      });
-    });
-  };
+		client.end();
+	    });
+	});
+    };
 };

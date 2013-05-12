@@ -158,16 +158,16 @@ server.on("client:connect", game.add_client.bind(game));
 // running the server.
 
 server.on("server:listening", function() {
-    console.log("listening");
+    process.stdout.write('done\n');
 });
 
 server.on("server:close", function() {
-    console.log("closed");
+    console.log("[INFO] Server closed");
 });
 
 // Generate the spawn area so the first player to join doesn't have to sit
 // around like an idiot waiting while they log in.
-console.info("Generating map...");
+process.stdout.write("[INFO] Loading map..");
 var chunks_generated = 0;
 for (var x = -7; x <= 7; ++x) {
     for (var y = -7; y <= 7; ++y) {
@@ -186,3 +186,6 @@ function onChunk(err, chunk) {
 	server.listen(nconf.get("server:port"), nconf.get("server:host"));
     }
 }
+process.on('uncaughtException',function(err){
+    console.log('[ERROR] ' + err);
+})

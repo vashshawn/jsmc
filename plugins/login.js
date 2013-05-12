@@ -5,21 +5,20 @@ var Map = require("../lib/map");
 module.exports = function() {
     return function(game) {
 	game.on("client:connect", function(client) {
-	    console.log("watching for login packet on client");
-	    
 	    client.once("packet", function(packet) {
 		if (packet.pid !== 0x02) { return; }
-		
+                process.stdout.write("[PLAYER] Player connecting");
 		game.map.get_abs_chunk(0, 0, function(err, chunk) {
 		    var y;
 		    for (y = 255; y > 0 && chunk.get_block_type(0, 0, y) === 0; --y) {}
 		    y += 2;
-		    
+		    process.stdout.write(' (' + packet.username + '):');
 		    if(~game.banned.indexOf(packet.username)) {
 			client.emit("data", {
 			    pid: 0xff,
 			    message: "Connection §4failed: You have been banned!"
 			});
+			process.stdout.write('..failed (banned)\n');
 			return;
 		    }
 		    
@@ -29,9 +28,9 @@ module.exports = function() {
 			player.admin = true;
 		    }
 		    
-                    console.log("created player " + player.name + " and spawning at " + [player.x, player.y, player.z].join(","));
+                    process.stdout.write('..created');
                     
-                    console.log("logging player in");
+                    process.stdout.write('..login');
                     
                     client.emit("data", {
                         pid: 0x01,
@@ -42,9 +41,9 @@ module.exports = function() {
                         difficulty: game.difficulty,
                         max_players: game.max_players,
 		    });
-		    
+		    process.stdout.write('..adding');
                     game.add_player(player);
-		    
+		    process.stdout.write('..done');
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
@@ -64,7 +63,7 @@ module.exports = function() {
 			
                         fs.readFile('./players/' + player.name + '.json', function(err, file) {
                             if (err) {
-                        	console.warn(player.name + ': err:' + err); 
+				console.warn('[ERROR]' + player.name + ': err:' + err);
                             }
 			    else {
 				player.save = JSON.parse(file);
@@ -84,8 +83,6 @@ module.exports = function() {
 					}
                                     });
 				}
-				console.log('loaded player ' + player.name + "'s savefile");
-				console.log('file of ' + player.name + ':' + file);
 				player.saveInterval = setInterval(function save() {
                                     fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                         if (err) {
@@ -96,11 +93,10 @@ module.exports = function() {
 					    catch (e) {}
 					}
                                         else {
-                                            console.log('saved player ' + player.name);
 					    try {
 						this.message('§2[System] Saved player file.');
 					    }
-					    catch (e) {}
+					    catch (e2) {}
 					}
                                     });
                                 }, 60000);
@@ -109,7 +105,7 @@ module.exports = function() {
 			
 		    });
 		});
-		
+		process.stdout.write('\n');
 		
 		client.on("game:disconnect", function(player) {
 		    try {

@@ -14,7 +14,6 @@ module.exports = function(location) {
 		    game.map.chunks[k].dirty = false;
 		});
 	    });
-	    process.stdout.write('.');
         }, 10000);
     };
 };
