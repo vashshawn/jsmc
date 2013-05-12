@@ -87,7 +87,7 @@ module.exports = function() {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
                             });
                         }
-        		if (Unsupported.checkForBlock(packet.slot.block) == false) {
+        		if (Unsupported.checkForBlock(packet.slot.block) == false || packet.slot.block == -1 || packet.slot.block == 327 || packet.slot.block == 331) {
 			    player.message('§4The item you (may have) tried to place is unsupported.');
                             game.clients.forEach(function(client) {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
@@ -112,6 +112,7 @@ module.exports = function() {
                             });
 			}
 			else {
+			    if (chunk.x = -1 && chunk.z = -1) { return;}
                             player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
                             game.clients.forEach(function(client) {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})

@@ -12,7 +12,7 @@ module.exports = function() {
 		else {
 		    if (set === false) {
 		    game.players.forEach(function(other) {
-                        other.client.emit("data", {pid: 0x03, message: "<" + (player.isAdmin ? "§2" : "") + player.name + "> " + (player.isAdmin ? "§r" : "") + packet.message});
+                        other.client.emit("data", {pid: 0x03, message: "<" + (player.isAdmin ? "§2" : "") + player.name + (player.isAdmin ? "§r" : "") + '>' + packet.message});
 		    });
 		    }
 		}
