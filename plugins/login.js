@@ -68,7 +68,6 @@ module.exports = function() {
 			    else {
 				player.save = JSON.parse(file);
 				// Yay! Success!
-				player.message('§2Loaded player from disk.');
                                 // Check for saved (permitted) chunks
                                 if (player.save.protection.chunks) {
                                     player.save.protection.chunks.forEach(function(protChunk) {
@@ -77,7 +76,6 @@ module.exports = function() {
 						if (!err) {
 						    chunk.protection.active = true;
 						    chunk.protection.owner = player.name;
-						    player.message('§2Loaded permitted chunk: §e' + chunk.x + '§2,§6' + chunk.z + '§4 >§e ' + chunk.x + '§2,§6' + chunk.z);
 						}
 					    });
 					}

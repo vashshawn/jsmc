@@ -82,10 +82,6 @@ module.exports = function() {
                             });
                         }
 			if (packet.slot.block == -1) {
-                            player.message('§2Chunk ' + chunk.x + ',' + chunk.z);
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
-                            });
                         }
         		if (Unsupported.checkForBlock(packet.slot.block) == false || packet.slot.block == -1 || packet.slot.block == 327 || packet.slot.block == 331) {
 			    player.message('§4The item you (may have) tried to place is unsupported.');
@@ -94,10 +90,10 @@ module.exports = function() {
                             });
                         }
 			else {
-			chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-			game.clients.forEach(function(client) {
-			    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0})
-			});
+			    chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
+			    game.clients.forEach(function(client) {
+				client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0})
+			    });
 			}
                     }
                     else {
