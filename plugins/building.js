@@ -55,7 +55,6 @@ module.exports = function() {
 		var block_x = tmp_x & 0x0f,
 		block_z = tmp_z & 0x0f,
 		block_y = tmp_y;
-		
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
 		    if (chunk.protection.active && chunk.protection.owner == player.name) {
 			if (packet.slot.block == 331) {			
@@ -63,6 +62,7 @@ module.exports = function() {
 			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
                         }
 			if (packet.slot.block == 46) {
+			    console.log('Removing ownership');
 			    player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
 			    player.save.protection.chunks.removeChunk(chunk.x, chunk.z);
                             game.clients.forEach(function(client) {
@@ -93,18 +93,16 @@ module.exports = function() {
                                 client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
                             });
                         }
-                        else {
-                            if (!Unsupported.checkForBlock(packet.slot.block) && packet.slot.block != -1 && packet.slot.block != 383 && packet.slot.block != 326 && packet.slot.block != 327 && packet.slot.block != 84 && packet.slot.block != 7 && packet.slot.block != 331) {
-                                chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-                                chunk.set_block_type(chunk.x, chunk.z, 1, 152);
-                                game.clients.forEach(function(client) {
-				    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0})
-                                });
-			    }
-                        }
+			else {
+			chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
+			game.clients.forEach(function(client) {
+			    client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0})
+			});
+			}
                     }
                     else {
-			if (packet.slot.block == 7) {
+			if (packet.slot.block == 7 && !chunk.protection.active) {
+			    console.log('Registered');
 			    player.message('§2You now own chunk ' + chunk.x + ', ' + chunk.z);
 			    player.save.protection.chunks.push({x: chunk.x, z: chunk.z});
 			    chunk.protection.active = true;
