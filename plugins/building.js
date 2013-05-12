@@ -6,7 +6,14 @@ Array.prototype.removeChunk = function(x, z) {
 	    return true;
 	}
     });
-}
+};
+Array.prototype.hasChunk = function(x, z) {
+    this.forEach(function (chunk, index) {
+        if (chunk.x == x && chunk.z == z) {
+            return true;
+        }
+    });
+};
 
 var Unsupported = require('../lib/unsupported.js');
 
@@ -17,11 +24,11 @@ module.exports = function() {
 	game.on("player:join", function(player) {
 	    
 	    player.client.on("packet:0f", function(packet) {
-		
+		try {
 		var tmp_x = packet.x,
 		tmp_z = packet.z,
 		tmp_y = packet.y;
-		
+		    
 		switch(packet.direction) {
 		case 0: {
 		    tmp_y -= 1;
@@ -54,9 +61,13 @@ module.exports = function() {
 		
 		var block_x = tmp_x & 0x0f,
 		block_z = tmp_z & 0x0f,
-		block_y = tmp_y;
+		    block_y = tmp_y;
+		}
+		catch (e) {
+		    console.log('[ERROR] ' + e);
+		}
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-		    if (chunk.protection.active && chunk.protection.owner == player.name) {
+		    if (chunk.protection.active && player.save.protection.chunks.hasChunk(chunk.x, chunk.z)) {
 			if (packet.slot.block == 331) {			
 			    player.message('§4Redstone support is on its way, but the last attempt failed.');
 			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');

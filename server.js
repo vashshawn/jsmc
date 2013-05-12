@@ -187,5 +187,5 @@ function onChunk(err, chunk) {
     }
 }
 process.on('uncaughtException',function(err){
-    console.log('[ERROR] ' + err);
+    console.log('[ERROR!] ' + err);
 })
