@@ -16,12 +16,11 @@
   "author": "Conrad Pankoff <deoxxa@fknsrs.biz> (http://www.fknsrs.biz/)",
   "license": "BSD",
   "dependencies": {
-    "dissolve": "0.1.1",
     "steez": "~0.4.2",
-    "concentrate": "0.1.1",
     "simplex-noise": "~2.1.1",
     "nconf": "0.6.4",
     "optimist": "~0.3.5",
-    "async": "~0.1.22"
+    "async": "~0.1.22",
+    "minecraft-protocol": "~0.3.0"
   }
 }
