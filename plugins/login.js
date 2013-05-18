@@ -110,15 +110,15 @@ module.exports = function() {
 			game.remove_player(client.player);
 		    }
 		    catch (e) {
-			console.warn('failed to remove player');
+			console.warn('[ERROR] failed to remove player');
 		    }
 		    
                     fs.writeFile('./players/' + client.player.name + '.json', JSON.stringify(client.player.save), function(err, res) {
 			if (err) {
-			    console.warn('failed to save player ' + client.player.name);
+			    console.warn('[ERROR] failed to save player ' + client.player.name);
 			}
 			else {
-			    console.log('saved player ' + client.player.name);
+			    console.log('[PLAYER] saved player ' + client.player.name);
 			}
 		    });
 		});
