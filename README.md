@@ -1,14 +1,11 @@
 jsmc (whiskers75/Miney edition)
 ====
 
-Haha, who would write a Minecraft server in JavaScript anyway?
-(whiskers75: Well, I would...)
-
 Overview
 --------
 
 jsmc is designed to be a very flexible, very hackable, moderately performant
-Minecraft server. It's written in JavaScript and runs well under node.js.
+Minecraft server. It's written in JavaScript and runs well under node.js. Expanded by whiskers75
 
 DEMO
 ----
@@ -16,18 +13,23 @@ DEMO
 There's usually a copy of recent (vanilla) code running on `fknsrs.biz:25565` if you just
 want to kick the tires without installing anything.
 
-whiskers75/Miney code will be hosted as soon as someone can find a host.
+whiskers75/jsmc code will be hosted as soon as someone can find a host.
 
 Features
 --------
 
 * Plugins all the way down!
 * Cross platform (runs anywhere node.js does)!
+* Easy to expand
+* Protection system (whiskers75)
+* Player data saves (whiskers75)
+* 
 
 Compatibility
 -------------
 
-The latest supported version of Minecraft client is <s>1.4.6</s> <s>1.4.7</s> 1.5.1! (Thanks to superjoe30 and SomeoneWeird for the patches!)
+The latest supported version of Minecraft client is 1.5.2! (Thanks to superjoe30 and SomeoneWeird for the patches!)
+Please be aware that this project is very far from being a full Minecraft server - there are lots of holes!
 
 Installation
 ------------
@@ -53,13 +55,12 @@ $ ./server.js config.json
 License
 -------
 
-3-clause BSD. A copy is included with the source.
-(whiskers75: Aw! I like the GPL.)
+whiskers75/jsmc is licensed under a 3-clause BSD license. A copy is included with the source.
 
-Contact deoxxa
+
+Authors
 -------
 
-* GitHub ([deoxxa](http://github.com/deoxxa))
-* Twitter ([@deoxxa](http://twitter.com/deoxxa))
-* ADN ([@deoxxa](https://alpha.app.net/deoxxa))
-* Email ([deoxxa@fknsrs.biz](mailto:deoxxa@fknsrs.biz))
+* deoxxa [GitHub](http://github.com/deoxxa) [@deoxxa](http://twitter.com/deoxxa)
+* whiskers75 [GitHub](http://github.com/whiskers75) [@whiskers75](http://twitter.com/whiskers75)
+
