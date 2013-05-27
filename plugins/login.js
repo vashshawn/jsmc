@@ -7,18 +7,18 @@ module.exports = function() {
 	game.on("client:connect", function(client) {
 	    client.once("packet", function(packet) {
 		if (packet.pid !== 0x02) { return; }
-                process.stdout.write("[PLAYER] Player connecting");
+                process.stdout.write("[PLAYER] Player connecting: ");
 		game.map.get_abs_chunk(0, 0, function(err, chunk) {
 		    var y;
 		    for (y = 255; y > 0 && chunk.get_block_type(0, 0, y) === 0; --y) {}
 		    y += 2;
-		    process.stdout.write(' (' + packet.username + '):');
+		    process.stdout.write(packet.username);
 		    if(~game.banned.indexOf(packet.username)) {
 			client.emit("data", {
 			    pid: 0xff,
 			    message: "Connection §4failed: You have been banned!"
 			});
-			process.stdout.write('..failed (banned)\n');
+			process.stdout.write(' - banned\n');
 			return;
 		    }
 		    
@@ -28,10 +28,6 @@ module.exports = function() {
 			player.admin = true;
 		    }
 		    
-                    process.stdout.write('..created');
-                    
-                    process.stdout.write('..login');
-                    
                     client.emit("data", {
                         pid: 0x01,
                         eid: player.eid,
@@ -41,9 +37,7 @@ module.exports = function() {
                         difficulty: game.difficulty,
                         max_players: game.max_players,
 		    });
-		    process.stdout.write('..adding');
                     game.add_player(player);
-		    process.stdout.write('..done');
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
@@ -109,7 +103,7 @@ module.exports = function() {
 			
 		    });
 		});
-		process.stdout.write('\n');
+		process.stdout.write(' - logged in\n');
                 client.on("game:disconnect", function(player) {
         	    try {
 			game.remove_player(client.player);
