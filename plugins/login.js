@@ -69,6 +69,12 @@ module.exports = function() {
 				player.save = JSON.parse(file);
 				// Yay! Success!
                                 // Check for saved (permitted) chunks
+				if (!player.save.protection) {
+				    console.log('[DEV] Found player ' + player.name + ' with no protection settings. Creating...');
+				    player.save.protection = {};
+				    player.save.protection.chunks = [];
+				    return;
+				}
                                 if (player.save.protection.chunks) {
                                     player.save.protection.chunks.forEach(function(protChunk) {
 					if (protChunk.x !== null) {
@@ -104,11 +110,6 @@ module.exports = function() {
 		    });
 		});
 		process.stdout.write('\n');
-                client.emit("data", {
-                    pid: 0x67,
-		    slot: 36,
-		    data: {block: 7}
-                });
                 client.on("game:disconnect", function(player) {
         	    try {
 			game.remove_player(client.player);
