@@ -104,9 +104,13 @@ module.exports = function() {
 		    });
 		});
 		process.stdout.write('\n');
-		
-		client.on("game:disconnect", function(player) {
-		    try {
+                client.emit("data", {
+                    pid: 0x67,
+		    slot: 36,
+		    data: {block: 7}
+                });
+                client.on("game:disconnect", function(player) {
+        	    try {
 			game.remove_player(client.player);
 		    }
 		    catch (e) {
