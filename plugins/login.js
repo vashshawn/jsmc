@@ -41,7 +41,7 @@ module.exports = function() {
                     fs.exists('./players/' + player.name + '.json', function(err, exists) {
 			if (!exists && !err) {
 			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
-			    player.save = new Object({protection: new Object({chunks: []})});
+			    player.save = {protection: {blocks: []}};
                             fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
                                 if (err) {
                                     console.warn('failed to save player ' + player.name + ' ' + err);
@@ -50,7 +50,6 @@ module.exports = function() {
                                 else {
                                     console.log('saved player ' + player.name);
                                     player.message('§2Saved player file!');
-				    player.message('§2You can start building in a chunk by placing a piece of bedrock inside it.');
                                 }
                             });
 			}

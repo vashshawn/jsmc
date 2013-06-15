@@ -62,11 +62,25 @@ game.use(ServerPingPlugin());
 // This plugin gracefully stops the server on Ctrl+C (SIGINT).
 var ServerStopPlugin = require('./plugins/server-stop');
 game.use(ServerStopPlugin());
-
+var MapgenSimplex = require("./plugins/mapgen-simplex"),
+mapgen_simplex = new MapgenSimplex(1);
+map.add_generator(mapgen_simplex.modify.bind(mapgen_simplex));
 // This plugin handles login for players, creating a new Player object,
 // attaching it to a client and finally adding it to the active Game object.
 var LoginPlugin = require("./plugins/login");
 game.use(LoginPlugin());
+
+// The `MapgenGlowstone` plugin places glowstone randomly. Yay! Great for
+// testing lighting, or just impressing your friends.
+var MapgenGlowstone = require("./plugins/mapgen-glowstone"),
+mapgen_glowstone = new MapgenGlowstone();
+map.add_generator(mapgen_glowstone.modify.bind(mapgen_glowstone));
+
+// The `MapgenGlassGrid` plugin puts a grid of glass pillars in the world.
+// Again this is mostly useful for debugging.
+var MapgenGlassGrid = require("./plugins/mapgen-glass-grid"),
+mapgen_glass_grid = new MapgenGlassGrid();
+map.add_generator(mapgen_glass_grid.modify.bind(mapgen_glass_grid));
 
 // This plugin handles chat messages between players.
 var ChatPlugin = require("./plugins/chat");
@@ -189,4 +203,5 @@ function onChunk(err, chunk) {
 process.on('uncaughtException',function(err){
     console.log('[ERROR!] ' + err);
     game.emit('server:error');
+    throw err;
 });

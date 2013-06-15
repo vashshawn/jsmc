@@ -66,68 +66,44 @@ module.exports = function() {
 		catch (e) {
 		    console.log('[ERROR] ' + e);
 		}
+                
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
-		    if (chunk.protection.active && player.save.protection.chunks.hasChunk(chunk.x, chunk.z)) {
-			if (packet.slot.block == 331) {			
+		    
+		     if (packet.slot.block == 331) {			
 			    player.message('§4Redstone support is on its way, but the last attempt failed.');
 			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
-                        }
-			if (packet.slot.block == 46) {
-			    console.log('Removing ownership');
-			    player.message('§4Removing ownership of chunk ' + chunk.x + ', ' + chunk.z);
-			    player.save.protection.chunks.removeChunk(chunk.x, chunk.z);
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
-                            });
                         }
 			if (packet.slot.block == 326) {
                             chunk.set_block_type(block_x, block_z, block_y, 9);
                             game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 9, metadata: 0})
+                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
                             });
 			}
                         if (packet.slot.block == 327) {
                             chunk.set_block_type(block_x, block_z, block_y, 11);
                             game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 9, metadata: 0})
+                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
                             });
                         }
-			if (packet.slot.block == -1) {
+		    if (packet.slot.block == -1) {
+			return;
                         }
         		if (Unsupported.checkForBlock(packet.slot.block) == false || packet.slot.block == -1 || packet.slot.block == 327 || packet.slot.block == 331) {
 			    player.message('§4The item you (may have) tried to place is unsupported.');
                             game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
+                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 0, metadata: 0})
                             });
                         }
 			else {
 			    chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
 			    game.clients.forEach(function(client) {
-				client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: packet.slot.block, metadata: 0})
+				client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: packet.slot.block, metadata: 0})
 			    });
-			}
-                    }
-                    else {
-			if (packet.slot.block == 7 && !chunk.protection.active) {
-                            console.log('[CHUNK] ' + player.name + ': Registered chunk ' + chunk.x + ', ' + chunk.z);
-			    player.message('§2You now own chunk ' + chunk.x + ', ' + chunk.z);
-			    player.save.protection.chunks.push({x: chunk.x, z: chunk.z});
-			    chunk.protection.active = true;
-			    chunk.protection.owner = player.name;
-			    game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
-                            });
-			}
-			else {
-			    if (chunk.x == -1 && chunk.z == -1) { return;}
-                            player.message('§4You do not own chunk ' + chunk.x + ', ' + chunk.z);
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: tmp_x, y: tmp_y, z: tmp_z, type: 0, metadata: 0})
-                            });
-                        } 
-                    }
-		});
-	    });
+                            player.save.protection.blocks.push({x: block_x, z: block_z, y: block_y});
+                            player.message('§2Placed block ' + [block_x, block_y, block_z].join(', '));
+                        }
+                });
+            });
 	});
     };
 };
