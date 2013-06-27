@@ -165,14 +165,15 @@ var Server = require("./lib/server");
 var server = new Server();
 
 // This is how you wire a `Server` up to a `Game`.
-
+console.log('[INFO] Starting JSMC');
+var startTime = Math.round((new Date()).getTime() / 1000);
 server.on("client:connect", game.add_client.bind(game));
 
 // These listeners are really just for convenience and some info for the person
 // running the server.
 
 server.on("server:listening", function() {
-    process.stdout.write('done\n');
+    console.log('[INFO] Done (' + (Math.round((new Date()).getTime() / 1000) - startTime) + 's)!');
 });
 
 server.on("server:close", function() {
@@ -181,7 +182,8 @@ server.on("server:close", function() {
 
 // Generate the spawn area so the first player to join doesn't have to sit
 // around like an idiot waiting while they log in.
-process.stdout.write("[INFO] Loading map..");
+console.log("[INFO] Loading chunks...");
+process.stdout.write('[CHUNK] Generated chunks: ');
 var chunks_generated = 0;
 for (var x = -7; x <= 7; ++x) {
     for (var y = -7; y <= 7; ++y) {
@@ -192,16 +194,18 @@ for (var x = -7; x <= 7; ++x) {
 function onChunk(err, chunk) {
     // We keep count of how many chunks have been generated here.
     chunks_generated++;
-    
+    if ((chunks_generated / 5) % 1 == 0) {
+	process.stdout.write(chunks_generated + ' ');
+    }
     // This is 15x15 chunks
     if (chunks_generated === 225) {
 	// We've loaded all the chunks we need, so it's time to start the
 	// server listening so people can connect!
+	process.stdout.write('\n');
 	server.listen(nconf.get("server:port"), nconf.get("server:host"));
     }
 }
 process.on('uncaughtException',function(err){
-    console.log('[ERROR!] ' + err);
+    console.log('[ERROR] ' + err.stack);
     game.emit('server:error');
-    throw err;
 });

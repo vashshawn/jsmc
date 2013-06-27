@@ -10,13 +10,13 @@ module.exports = function() {
 			game.map.get_chunk(x, z, function(err, chunk) {
 			    zlib.deflate(chunk.data, function(err, data) {
 				player.client.emit("data", {pid: 0x33, x: x, z: z, solid: 1, primary_bitmap: 65535, add_bitmap: 65535, data: data});
-
+				
 				sent_chunks++;
-
+				
 				if (sent_chunks === 225) {
 				    game.players.forEach(function(other_player) {
 					if (player === other_player) { return; }
-
+					
 					player.client.emit("data", {
 					    pid: 0x14,
 					    eid: other_player.eid,
@@ -29,7 +29,7 @@ module.exports = function() {
 					    current_item: 0,
 					    metadata: [["int", 8, 0]],
 					});
-
+					
 					other_player.client.emit("data", {
 					    pid: 0x14,
 					    eid: player.eid,
@@ -43,7 +43,7 @@ module.exports = function() {
 					    metadata: [["int", 8, 0]],
 					});
 				    });
-
+				    
 				    player.client.emit("data", {pid: 0x06, x: 0, y: 30, z: 0});
 				    player.client.emit("data", {
 					pid: 0x0d,
