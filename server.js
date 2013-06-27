@@ -183,7 +183,7 @@ server.on("server:close", function() {
 // Generate the spawn area so the first player to join doesn't have to sit
 // around like an idiot waiting while they log in.
 console.log("[INFO] Loading chunks...");
-process.stdout.write('[CHUNK] Generated chunks: ');
+process.stdout.write('[CHUNK] Generated chunks: 0');
 var chunks_generated = 0;
 for (var x = -7; x <= 7; ++x) {
     for (var y = -7; y <= 7; ++y) {
@@ -194,9 +194,19 @@ for (var x = -7; x <= 7; ++x) {
 function onChunk(err, chunk) {
     // We keep count of how many chunks have been generated here.
     chunks_generated++;
-    if ((chunks_generated / 5) % 1 == 0) {
-	process.stdout.write(chunks_generated + ' ');
-    }
+        if ((chunks_generated - 1) >= 100) {
+            process.stdout.write('\x08\x08\x08' + chunks_generated);
+        }
+	else {
+	if ((chunks_generated - 1) >= 10) {
+	    process.stdout.write('\x08\x08' + chunks_generated);
+	}
+	    else {
+        if ((chunks_generated - 1) >= 0) {
+            process.stdout.write('\x08' + chunks_generated);
+        }
+		}
+	    }
     // This is 15x15 chunks
     if (chunks_generated === 225) {
 	// We've loaded all the chunks we need, so it's time to start the
