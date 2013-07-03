@@ -69,39 +69,38 @@ module.exports = function() {
                 
 		game.map.get_abs_chunk(packet.x, packet.z, function(err, chunk) {
 		    
-		     if (packet.slot.block == 331) {			
-			    player.message('§4Redstone support is on its way, but the last attempt failed.');
-			    player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
-                        }
-			if (packet.slot.block == 326) {
-                            chunk.set_block_type(block_x, block_z, block_y, 9);
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
-                            });
-			}
-                        if (packet.slot.block == 327) {
-                            chunk.set_block_type(block_x, block_z, block_y, 11);
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
-                            });
-                        }
+		    if (packet.slot.block == 331) {			
+			player.message('§4Redstone support is on its way, but the last attempt failed.');
+			player.message('§4You can help by contributing at github.com/whiskers75/jsmc.');
+                    }
+		    if (packet.slot.block == 326) {
+                        chunk.set_block_type(block_x, block_z, block_y, 9);
+                        game.clients.forEach(function(client) {
+                            client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
+                        });
+		    }
+                    if (packet.slot.block == 327) {
+                        chunk.set_block_type(block_x, block_z, block_y, 11);
+                        game.clients.forEach(function(client) {
+                            client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 9, metadata: 0})
+                        });
+                    }
 		    if (packet.slot.block == -1) {
 			return;
-                        }
-        		if (Unsupported.checkForBlock(packet.slot.block) == false || packet.slot.block == -1 || packet.slot.block == 327 || packet.slot.block == 331) {
-			    player.message('§4The item you (may have) tried to place is unsupported.');
-                            game.clients.forEach(function(client) {
-                                client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 0, metadata: 0})
-                            });
-                        }
-			else {
-			    chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
-			    game.clients.forEach(function(client) {
-				client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: packet.slot.block, metadata: 0})
-			    });
-                            player.save.protection.blocks.push({x: block_x, z: block_z, y: block_y});
-                            player.message('§2Placed block ' + [block_x, block_y, block_z].join(', '));
-                        }
+                    }
+        	    if (Unsupported.checkForBlock(packet.slot.block) == false || packet.slot.block == -1 || packet.slot.block == 327 || packet.slot.block == 331) {
+			player.message('§4The item you (may have) tried to place is unsupported.');
+                        game.clients.forEach(function(client) {
+                            client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: 0, metadata: 0})
+                        });
+                    }
+		    else {
+			chunk.set_block_type(block_x, block_z, block_y, packet.slot.block);
+			game.clients.forEach(function(client) {
+			    client.emit("data", {pid: 0x35, x: block_x, y: block_y, z: block_z, type: packet.slot.block, metadata: 0})
+			});
+                        player.save.protection.blocks.push({x: block_x, z: block_z, y: block_y});
+                    }
                 });
             });
 	});

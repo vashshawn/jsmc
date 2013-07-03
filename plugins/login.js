@@ -1,128 +1,76 @@
-var Player = require("../lib/player.js");
-var fs = require('fs');
-var Map = require("../lib/map");
+var Player = require("../lib/player.js"),
+fs = require('fs');
 
 module.exports = function() {
     return function(game) {
 	game.on("client:connect", function(client) {
+
 	    client.once("packet", function(packet) {
 		if (packet.pid !== 0x02) { return; }
-                process.stdout.write("[PLAYER] Player connecting: ");
+
 		game.map.get_abs_chunk(0, 0, function(err, chunk) {
 		    var y;
 		    for (y = 255; y > 0 && chunk.get_block_type(0, 0, y) === 0; --y) {}
 		    y += 2;
-		    process.stdout.write(packet.username);
+		    
 		    if(~game.banned.indexOf(packet.username)) {
+			console.log('[PLAYER] Kicked banned player ' + player.username + '!');
 			client.emit("data", {
 			    pid: 0xff,
-			    message: "Connection §4failed: You have been banned!"
+			    message: "Banned."
 			});
-			process.stdout.write(' - banned\n');
 			return;
 		    }
 		    
-		    var player = new Player(game, {client: client, name: packet.username, x: game.spawn.x, y: game.spawn.y, z: game.spawn.z, stance: y + 1.62, yaw: 0, pitch: 0});
-		    client.player = player;
-		    if(~game.admins.indexOf(packet.username)) {
+		    var playerData = {
+			client: client,
+			name: packet.username,
+			x: 0,
+			z: 0,
+			y: y,
+			stance: y + 1.62,
+			yaw: 0,
+			pitch: 0
+		    };
+		    
+		    if(fs.existsSync('./players/' + packet.username + ".json")) {
+			
+			var data = JSON.parse(fs.readFileSync('./players/' + packet.username + ".json"));
+			
+			if (typeof data.x      === "number")  { playerData.x      = data.x;     }
+			if (typeof data.z      === "number")  { playerData.z      = data.z;     }
+			if (typeof data.y      === "number")  { playerData.y      = data.y;     playerData.stance = playerData.y + 1.62; };
+			
+		    }
+		    
+		    var player = new Player(game, playerData);
+		    
+		    if(~game.admins.indexOf(packet.username))
 			player.admin = true;
-		    }
 		    
-                    client.emit("data", {
-                        pid: 0x01,
-                        eid: player.eid,
-                        level_type: game.world.type,
-                        game_mode: game.mode,
-                        dimension: game.world.dimension,
-                        difficulty: game.difficulty,
-                        max_players: game.max_players,
+		    //console.log("created player " + player.name + " and spawning at " + [player.x, player.y, player.z].join(","));
+		    
+                    console.log("[PLAYER] " + player.name + ' spawned at ' + [player.x, player.y, player.z].join(","));
+		    
+		    client.emit("data", {
+			pid: 0x01,
+			eid: player.eid,
+			level_type: game.world.type,
+			game_mode: game.mode,
+			dimension: game.world.dimension,
+			difficulty: game.difficulty,
+			max_players: game.max_players,
 		    });
-                    game.add_player(player);
-                    fs.exists('./players/' + player.name + '.json', function(err, exists) {
-			if (!exists && !err) {
-			    player.message('§2Welcome! It looks like you\'re new here. Creating save file...');
-			    player.save = {protection: {blocks: []}};
-                            fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
-                                if (err) {
-                                    console.warn('failed to save player ' + player.name + ' ' + err);
-                                    player.message('§4Failed to save your player file!');
-                                }
-                                else {
-                                    console.log('saved player ' + player.name);
-                                    player.message('§2Saved player file!');
-                                }
-                            });
-			}
-			
-                        fs.readFile('./players/' + player.name + '.json', function(err, file) {
-                            if (err) {
-				console.warn('[ERROR]' + player.name + ': err:' + err);
-                            }
-			    else {
-				player.save = JSON.parse(file);
-				// Yay! Success!
-                                // Check for saved (permitted) chunks
-				if (!player.save.protection) {
-				    console.log('[DEV] Found player ' + player.name + ' with no protection settings. Creating...');
-				    player.save.protection = {};
-				    player.save.protection.chunks = [];
-				    return;
-				}
-                                if (player.save.protection.chunks) {
-                                    player.save.protection.chunks.forEach(function(protChunk) {
-					if (protChunk.x !== null) {
-					    game.map.get_chunk(protChunk.x, protChunk.z, function(err, chunk) {
-						if (!err) {
-						    chunk.protection.active = true;
-						    chunk.protection.owner = player.name;
-						}
-					    });
-					}
-                                    });
-				}
-				player.saveInterval = setInterval(function save() {
-                                    fs.writeFile('./players/' + player.name + '.json', JSON.stringify(player.save), function(err, res) {
-                                        if (err) {
-                                            console.warn('failed to save player ' + player.name + ' ' + err);
-					    try {
-						this.message('§4[System] Failed to save your player file!');
-					    }
-					    catch (e) {}
-					}
-                                        else {
-					    try {
-						this.message('§2[System] Saved player file.');
-					    }
-					    catch (e2) {}
-					}
-                                    });
-                                }, 60000);
-			    }
+		    
+		    game.add_player(player);
+		    
+		    client.on("game:disconnect", function() {
+			player.save(function() {
+			    game.remove_player(player);
 			});
-			
-		    });
-		});
-		process.stdout.write(' - logged in\n');
-                client.on("game:disconnect", function(player) {
-        	    try {
-			game.remove_player(client.player);
-		    }
-		    catch (e) {
-			console.warn('[ERROR] failed to remove player');
-		    }
-		    
-                    fs.writeFile('./players/' + client.player.name + '.json', JSON.stringify(client.player.save), function(err, res) {
-			if (err) {
-			    console.warn('[ERROR] failed to save player ' + client.player.name);
-			}
-			else {
-			    console.log('[PLAYER] saved player ' + client.player.name);
-			}
 		    });
 		});
 	    });
 	});
-    }
-}
-
-
+    };
+};

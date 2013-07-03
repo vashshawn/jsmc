@@ -62,9 +62,6 @@ game.use(ServerPingPlugin());
 // This plugin gracefully stops the server on Ctrl+C (SIGINT).
 var ServerStopPlugin = require('./plugins/server-stop');
 game.use(ServerStopPlugin());
-var MapgenSimplex = require("./plugins/mapgen-simplex"),
-mapgen_simplex = new MapgenSimplex(1);
-map.add_generator(mapgen_simplex.modify.bind(mapgen_simplex));
 // This plugin handles login for players, creating a new Player object,
 // attaching it to a client and finally adding it to the active Game object.
 var LoginPlugin = require("./plugins/login");
@@ -194,19 +191,19 @@ for (var x = -7; x <= 7; ++x) {
 function onChunk(err, chunk) {
     // We keep count of how many chunks have been generated here.
     chunks_generated++;
-        if ((chunks_generated - 1) >= 100) {
-            process.stdout.write('\x08\x08\x08' + chunks_generated);
-        }
-	else {
+    if ((chunks_generated - 1) >= 100) {
+        process.stdout.write('\x08\x08\x08' + chunks_generated);
+    }
+    else {
 	if ((chunks_generated - 1) >= 10) {
 	    process.stdout.write('\x08\x08' + chunks_generated);
 	}
-	    else {
-        if ((chunks_generated - 1) >= 0) {
-            process.stdout.write('\x08' + chunks_generated);
-        }
-		}
-	    }
+	else {
+            if ((chunks_generated - 1) >= 0) {
+		process.stdout.write('\x08' + chunks_generated);
+            }
+	}
+    }
     // This is 15x15 chunks
     if (chunks_generated === 225) {
 	// We've loaded all the chunks we need, so it's time to start the
